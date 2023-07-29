@@ -1,7 +1,6 @@
 const express = require('express');
 const Prometheus = require('prom-client');
 const ResponseTime = require('response-time');
-const http = require('http');
 
 const {
   requestCountGenerator,
@@ -186,12 +185,7 @@ module.exports = (userOptions = {}) => {
   if (options.pushgatewayUrl && options.pushgatewayJobName) {
     // so pushgateway is enabled
     const pushgatewayClientOptions = {
-      timeout: 5000, // Set the request timeout to 5000ms
-      agent: new http.Agent({
-        keepAlive: true,
-        keepAliveMsec: 10000,
-        maxSockets: 5,
-      }),
+      timeout: 60000, // Set the request timeout to 5000ms
     };
     if (options.pushgatewayAuth
       && options.pushgatewayAuth.username
