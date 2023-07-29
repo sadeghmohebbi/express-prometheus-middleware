@@ -176,13 +176,21 @@ module.exports = (userOptions = {}) => {
    */
   if (options.pushgatewayUrl && options.pushgatewayJobName && isValidUrl(options.pushgatewayUrl)) {
     // so pushgateway is enabled
-    const pushgateway = new Prometheus.Pushgateway(options.pushgatewayUrl)
-
-    function pushMetricsToPrometheusPushgateway() {
-      pushgateway.push({ jobName: options.pushgatewayJobName }, options.pushCallback)
+    try {
+      const pushgateway = new Prometheus.Pushgateway(options.pushgatewayUrl)
+  
+      function pushMetricsToPrometheusPushgateway() {
+        try {
+          pushgateway.push({ jobName: options.pushgatewayJobName }, options.pushCallback)
+        } catch(err) {
+          console.error(err)
+        }
+      }
+      
+      setInterval(pushMetricsToPrometheusPushgateway, options.pushInterval)
+    } catch (err) {
+      console.error(err)
     }
-    
-    setInterval(pushMetricsToPrometheusPushgateway, options.pushInterval)
   }
 
   return app;
