@@ -1,6 +1,7 @@
 const express = require('express');
 const Prometheus = require('prom-client');
 const ResponseTime = require('response-time');
+const http = require('http');
 
 const {
   requestCountGenerator,
@@ -12,7 +13,7 @@ const {
 const {
   normalizeStatusCode,
   normalizePath,
-  isValidUrl
+  isValidUrl,
 } = require('./normalizers');
 
 const defaultOptions = {
@@ -34,7 +35,7 @@ const defaultOptions = {
   pushgatewayAuth: null, // { username: String, password: String }
   pushgatewayJobName: null,
   pushInterval: 60 * 1000,
-  pushCallback: function (err, resp, body) {
+  pushCallback(err, resp, body) {
     if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
       if (err) {
         console.error('Error pushing metrics to Pushgateway:', err);
@@ -42,7 +43,7 @@ const defaultOptions = {
         console.log('Metrics pushed to Pushgateway:', body.toString(), 'with response: ', resp.toString());
       }
     }
-  }
+  },
 };
 
 module.exports = (userOptions = {}) => {
@@ -175,35 +176,35 @@ module.exports = (userOptions = {}) => {
   /**
    * Pushgateway implementation
    */
+  function pushMetricsToPrometheusPushgateway(pushgateway) {
+    try {
+      pushgateway.pushAdd({ jobName: options.pushgatewayJobName }, options.pushCallback);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   if (options.pushgatewayUrl && options.pushgatewayJobName && isValidUrl(options.pushgatewayUrl)) {
     // so pushgateway is enabled
-    try {
-      let pushgatewayClientOptions = {
-        timeout: 5000, //Set the request timeout to 5000ms
-        agent: new http.Agent({
-          keepAlive: true,
-          keepAliveMsec: 10000,
-          maxSockets: 5,
-        }),
-      }
-      if (options.pushgatewayAuth && options.pushgatewayAuth.username && options.pushgatewayAuth.password) {
-        pushgatewayClientOptions.auth = `${options.pushgatewayAuth.username}:${options.pushgatewayAuth.password}`
-      }
-
-      const pushgateway = new Prometheus.Pushgateway(options.pushgatewayUrl,  pushgatewayClientOptions)
-  
-      function pushMetricsToPrometheusPushgateway() {
-        try {
-          pushgateway.pushAdd({ jobName: options.pushgatewayJobName }, options.pushCallback)
-        } catch(err) {
-          console.error(err)
-        }
-      }
-      
-      setInterval(pushMetricsToPrometheusPushgateway, options.pushInterval)
-    } catch (err) {
-      console.error(err)
+    const pushgatewayClientOptions = {
+      timeout: 5000, // Set the request timeout to 5000ms
+      agent: new http.Agent({
+        keepAlive: true,
+        keepAliveMsec: 10000,
+        maxSockets: 5,
+      }),
+    };
+    if (options.pushgatewayAuth
+      && options.pushgatewayAuth.username
+      && options.pushgatewayAuth.password) {
+      pushgatewayClientOptions.auth = `${options.pushgatewayAuth.username}:${options.pushgatewayAuth.password}`;
     }
+    const pushgateway = new Prometheus.Pushgateway(
+      options.pushgatewayUrl, pushgatewayClientOptions,
+    );
+    setInterval(() => {
+      pushMetricsToPrometheusPushgateway(pushgateway);
+    }, options.pushInterval);
   }
 
   return app;

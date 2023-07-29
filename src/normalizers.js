@@ -21,7 +21,7 @@ const UrlValueParser = require('url-value-parser');
  * @returns {string} a normalized path, withoud ids.
  */
 function normalizePath(originalUrl, extraMasks = [], placeholder = '#val') {
-  const { pathname } = new URL(originalUrl)
+  const { pathname } = new URL(originalUrl);
   const urlParser = new UrlValueParser({ extraMasks });
   return urlParser.replacePathValues(pathname, placeholder);
 }
@@ -52,15 +52,16 @@ function normalizeStatusCode(status) {
 
 function isValidUrl(s) {
   try {
+    // eslint-disable-next-line no-new
     new URL(s);
     return true;
   } catch (err) {
     return false;
   }
-};
+}
 
 module.exports = {
   normalizePath,
   normalizeStatusCode,
-  isValidUrl
+  isValidUrl,
 };
