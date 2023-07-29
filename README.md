@@ -11,7 +11,7 @@ includes:
 ## Install
 
 ``` bash
-npm install --save@sadeghmohebbi/express-prometheus-middleware
+npm install --save @sadeghmohebbi/express-prometheus-middleware
 ```
 
 ## Usage
