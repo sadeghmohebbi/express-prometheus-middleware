@@ -35,6 +35,7 @@ npm install --save @sadeghmohebbi/express-prometheus-middleware
 | normalizeStatus | Optional parameter to disable normalization of the status code. Example of normalized and non-normalized status code respectively: 4xx and 422.| true
 | pushgatewayUrl | Optioanl, if provided pushgateway enabled to push your metrics to provided pushgateway url | `null`
 | pushgatewayJobName | Optional, should provided when pushgateway enabled | `null`
+| pushgatewayAuth | Optional, should provided when pushgateway basic auth required with object { username: String, password: String } | `null`
 | pushInterval | Optional interval in millis used when pushgateway option enabled | 60000 (1m)
 | pushCallback | function (err, resp, body) to handle pushgateway post request response | something simple logged in debug mode
 
