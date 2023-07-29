@@ -12,6 +12,7 @@ const {
 const {
   normalizeStatusCode,
   normalizePath,
+  isValidUrl
 } = require('./normalizers');
 
 const defaultOptions = {
@@ -29,6 +30,18 @@ const defaultOptions = {
   customLabels: [],
   transformLabels: null,
   normalizeStatus: true,
+  pushgatewayUrl: null,
+  pushgatewayJobName: null,
+  pushInterval: 60 * 1000,
+  pushCallback: function (err, resp, body) {
+    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+      if (err) {
+        console.error('Error pushing metrics to Pushgateway:', err);
+      } else {
+        console.log('Metrics pushed to Pushgateway:', body.toString(), 'with response: ', resp.toString());
+      }
+    }
+  }
 };
 
 module.exports = (userOptions = {}) => {
@@ -157,6 +170,16 @@ module.exports = (userOptions = {}) => {
     res.set('Content-Type', Prometheus.register.contentType);
     return res.end(await Prometheus.register.metrics());
   });
+
+  /**
+   * Pushgateway implementation
+   */
+  if (options.pushgatewayUrl && options.pushgatewayJobName && isValidUrl(options.pushgatewayUrl)) {
+    // so pushgateway is enabled
+    const pushgateway = new Prometheus.Pushgateway(options.pushgatewayUrl)
+    
+    setInterval(pushgateway.push({ jobName: options.pushgatewayJobName }, options.pushCallback), options.pushInterval)
+  }
 
   return app;
 };

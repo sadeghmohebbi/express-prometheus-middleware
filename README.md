@@ -1,4 +1,4 @@
-# Express Prometheus Middleware
+# Express Prometheus Middleware#
 
 [![npm](https://img.shields.io/npm/v/express-prometheus-middleware.svg)](https://www.npmjs.com/package/express-prometheus-middleware)
 [![Dependency Status](https://david-dm.org/joao-fontenele/express-prometheus-middleware.svg)](https://david-dm.org/joao-fontenele/express-prometheus-middleware)
@@ -9,6 +9,10 @@
 This is a middleware for express servers, that expose metrics for prometheus.
 
 The metrics exposed allows to calculate common RED (Request, Error rate, Duration of requests), and USE (Utilisation, Error rate, and Saturation), metrics
+
+## This is a Forked version!
+includes:
+- expose prom-client registry to pushgateway
 
 ## Install
 
@@ -37,6 +41,11 @@ npm i --save express-prometheus-middleware
 | customLabels | Optional Array containing extra labels, used together with  `transformLabels` | no extra labels: `[]` |
 | transformLabels | Optional `function(labels, req, res)` adds to the labels object dynamic values for each label in `customLabels` | `null` |
 | normalizeStatus | Optional parameter to disable normalization of the status code. Example of normalized and non-normalized status code respectively: 4xx and 422.| true
+| pushgatewayUrl | Optioanl, if provided pushgateway enabled to push your metrics to provided pushgateway url | `null`
+| pushgatewayJobName | Optional, should provided when pushgateway enabled | `null`
+| pushInterval | Optional interval in millis used when pushgateway option enabled | 60000 (1m)
+| pushCallback | function (err, resp, body) to handle pushgateway post request response | something simple logged in debug mode
+
 ### Example
 
 ```js
