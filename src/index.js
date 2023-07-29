@@ -28,6 +28,7 @@ const defaultOptions = {
   extraMasks: [],
   customLabels: [],
   transformLabels: null,
+  defaultLabels: null,
   normalizeStatus: true,
   pushgatewayUrl: null,
   pushgatewayAuth: null, // { username: String, password: String }
@@ -143,6 +144,10 @@ module.exports = (userOptions = {}) => {
     } catch (err) {
       // the dependency has not been installed, skipping
     }
+  }
+
+  if (options.defaultLabels) {
+    Prometheus.register.setDefaultLabels(options.defaultLabels);
   }
 
   app.use(redMiddleware);
