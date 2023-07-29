@@ -50,18 +50,7 @@ function normalizeStatusCode(status) {
   return '5XX';
 }
 
-function isValidUrl(s) {
-  try {
-    // eslint-disable-next-line no-new
-    new URL(s);
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
-
 module.exports = {
   normalizePath,
   normalizeStatusCode,
-  isValidUrl,
 };

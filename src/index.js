@@ -13,7 +13,6 @@ const {
 const {
   normalizeStatusCode,
   normalizePath,
-  isValidUrl,
 } = require('./normalizers');
 
 const defaultOptions = {
@@ -184,7 +183,7 @@ module.exports = (userOptions = {}) => {
     }
   }
 
-  if (options.pushgatewayUrl && options.pushgatewayJobName && isValidUrl(options.pushgatewayUrl)) {
+  if (options.pushgatewayUrl && options.pushgatewayJobName) {
     // so pushgateway is enabled
     const pushgatewayClientOptions = {
       timeout: 5000, // Set the request timeout to 5000ms
