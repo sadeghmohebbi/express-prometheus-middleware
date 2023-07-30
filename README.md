@@ -5,7 +5,7 @@ This is a middleware for express servers, that expose metrics for prometheus.
 The metrics exposed allows to calculate common RED (Request, Error rate, Duration of requests), and USE (Utilisation, Error rate, and Saturation), metrics
 
 ## Additional Features with this forked repository
-this is a forked repo with additional features, includes:
+this is a forked repo with additional features on top of original repo, includes:
 - expose prom-client registry to pushgateway
 - default labels support (prometheus register level)
 

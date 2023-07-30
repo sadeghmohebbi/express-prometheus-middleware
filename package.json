@@ -39,7 +39,7 @@
   },
   "peerDependencies": {
     "express": "4.x",
-    "prom-client": ">= 10.x <= 13.x"
+    "prom-client": ">= 10.x <= 14.x"
   },
   "optionalDependencies": {
     "prometheus-gc-stats": "^0.6.2"
