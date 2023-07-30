@@ -96,7 +96,7 @@ module.exports = (userOptions = {}) => {
         options.transformLabels(labels, req, res);
       }
       requestCount.inc(labels);
-      requestDuration.observe(labels, time);
+      requestDuration.observe(labels, time / 1000);
 
       // observe request length
       if (options.requestLengthBuckets.length) {
